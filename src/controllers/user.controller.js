@@ -10,6 +10,12 @@ const postLogin = async (req, res) => {
   res.status(200).json({ token: result });
 };
 
+const getEveryUser = async (_req, res) => {
+  const everyUser = await loginService.getEveryUser();
+
+  res.status(200).json(everyUser);
+};
+
 const userCreate = async (req, res) => {
   const user = req.body;
   const createdUser = await loginService.userCreate(user);
@@ -21,5 +27,6 @@ const userCreate = async (req, res) => {
 
 module.exports = {
   postLogin,
+  getEveryUser,
   userCreate,
 };

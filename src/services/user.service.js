@@ -28,6 +28,14 @@ const getUser = async (email) => {
   return result;
 };
 
+const getEveryUser = async () => {
+  const result = await User.findAll();
+  return result.map(({ dataValues }) => {
+    const { password: _, ...newUser } = dataValues;
+    return newUser;
+  });
+};
+
 const userCreate = async (user) => {
   const existentUser = await getUser(user.email);
   if (existentUser) {
@@ -39,5 +47,6 @@ const userCreate = async (user) => {
 
 module.exports = {
   postLogin,
+  getEveryUser,
   userCreate,
 };
