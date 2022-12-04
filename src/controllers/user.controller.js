@@ -16,6 +16,15 @@ const getEveryUser = async (_req, res) => {
   res.status(200).json(everyUser);
 };
 
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+  const result = await loginService.getUserById(id);
+  if (result) {
+    return res.status(200).json(result);
+  }
+  res.status(404).json({ message: 'User does not exist' });
+};
+
 const userCreate = async (req, res) => {
   const user = req.body;
   const createdUser = await loginService.userCreate(user);
@@ -28,5 +37,6 @@ const userCreate = async (req, res) => {
 module.exports = {
   postLogin,
   getEveryUser,
+  getUserById,
   userCreate,
 };

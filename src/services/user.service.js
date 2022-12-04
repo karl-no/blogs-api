@@ -13,6 +13,11 @@ const getToken = (result) => {
   return token;
 };
 
+const resetPassword = (array) => array.map(({ dataValues }) => {
+  const { password: _, ...newUser } = dataValues;
+  return newUser;
+});
+
 const postLogin = async (email, password) => {
   const user = await User.findOne({ where: { email, password } });
   if (user) {
@@ -34,6 +39,16 @@ const getEveryUser = async () => {
     const { password: _, ...newUser } = dataValues;
     return newUser;
   });
+  // return resetPassword(result);
+};
+
+const getUserById = async (id) => {
+  const user = await User.findByPk(id);
+  if (user) {
+    const [result] = resetPassword([user]);
+    return result;
+  }
+  return user;
 };
 
 const userCreate = async (user) => {
@@ -48,5 +63,6 @@ const userCreate = async (user) => {
 module.exports = {
   postLogin,
   getEveryUser,
+  getUserById,
   userCreate,
 };
