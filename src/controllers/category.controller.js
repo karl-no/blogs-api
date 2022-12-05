@@ -10,6 +10,13 @@ const postCategory = async (req, res) => {
   res.status(409).json({ message: 'Category already registered' });
 };
 
+const getCategories = async (_req, res) => {
+  const categories = await categoryService.getCategories();
+
+  res.status(200).json(categories);
+};
+
 module.exports = {
   postCategory,
+  getCategories,
 };
