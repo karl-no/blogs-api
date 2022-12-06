@@ -1,4 +1,4 @@
-const { sequelize, BlogPost, Category, PostCategory } = require('../models');
+const { sequelize, BlogPost, Category, PostCategory, User } = require('../models');
 
 const noCategory = async (categories) => {
   const { count } = await Category.findAndCountAll({ where: { id: categories } });
@@ -13,10 +13,11 @@ const createPost = async ({ title, content, categoryIds }, userId) => {
     };
   }
   try {
-    const post = await sequelize.transaction(async (t) => {
-      const newData = await BlogPost.create({ userId, title, content }, { transaction: t });
+    const post = await sequelize.transaction(async (data) => {
+      const newData = await BlogPost.create({ userId, title, content }, { transaction: data });
+
       await Promise.all(categoryIds.map(async (categoryId) => PostCategory.create({ 
-        postId: newData.id, categoryId }, { transaction: t })));
+        postId: newData.id, categoryId }, { transaction: data })));
       return newData;
     });
     return post;
@@ -25,6 +26,14 @@ const createPost = async ({ title, content, categoryIds }, userId) => {
   }
 };
 
+const getPosts = async () => BlogPost.findAll({
+  include: [
+    { model: User, as: 'user', attributes: { exclude: ['password'] } },
+    { model: Category, as: 'categories', through: { attribute: [] } },
+  ],
+});
+
 module.exports = {
   createPost,
+  getPosts,
 };
